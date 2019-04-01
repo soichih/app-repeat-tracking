@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,vmem=16gb,walltime=01:00:00
+#PBS -l nodes=1:ppn=1,vmem=4gb,walltime=00:30:00
 #PBS -N mrtrix3_act_rep
 #PBS -V
 
@@ -12,7 +12,7 @@ echo "Tracking data..."
 time singularity exec -e docker://brainlife/mrtrix3:$tag ./mrtrix3_tracking.sh
 
 ## check for the output for success
-if [ -f track.tck ]; then
+if [ -f out/track.tck ]; then
     exit 0
 else
     echo "Final tractography file missing."

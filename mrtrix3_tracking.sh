@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## define number of threads to use
-NCORE=8
+NCORE=1
 
 ## export more log messages
 set -x
@@ -32,6 +32,8 @@ MAX_LENGTH=`jq -r '.max_length' config.json`
 ##
 ## begin execution
 ##
+
+rm -rf out/
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
@@ -145,17 +147,17 @@ for lmax in $LMAXS; do
 done
 
 ## combine different parameters into 1 output
-tckedit wb*.tck track.tck -force -nthreads $NCORE -quiet
+tckedit wb*.tck out/track.tck -force -nthreads $NCORE -quiet
 
 ## find the final size
-COUNT=`tckinfo track.tck | grep -w 'count' | awk '{print $2}'`
+COUNT=`tckinfo out/track.tck | grep -w 'count' | awk '{print $2}'`
 echo "Ensemble tractography generated $COUNT of a requested $TOTAL"
 
 ## if count is wrong, say so / fail / clean for fast re-tracking
 if [ $COUNT -ne $TOTAL ]; then
     echo "Incorrect count. Tractography failed."
     rm -f wb*.tck
-    rm -f track.tck
+    rm -f out/track.tck
     exit 1
 else
     echo "Correct count. Tractography complete."
@@ -163,7 +165,7 @@ else
 fi
 
 ## simple summary text
-tckinfo track.tck > tckinfo.txt
+tckinfo out/track.tck > out/tckinfo.txt
 
 ## clear mrtrix files
 rm -f *.mif
