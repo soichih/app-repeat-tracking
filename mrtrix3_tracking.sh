@@ -34,6 +34,7 @@ MAX_LENGTH=`jq -r '.max_length' config.json`
 ##
 
 rm -rf out/
+mkdir out/
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
