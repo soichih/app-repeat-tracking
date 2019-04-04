@@ -32,7 +32,7 @@ transfer_output_files = out
 
 output = stdout.log
 error = stderr.log
-log = job.log
+log = condor.log
 
 queue
 EOF
