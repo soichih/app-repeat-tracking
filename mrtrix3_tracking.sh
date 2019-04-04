@@ -3,13 +3,13 @@
 export LD_LIBRARY_PATH=/usr/lib/fsl/5.0:/usr/share/fsl/5.0/bin:/.singularity.d/libs
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/fsl/5.0/bin:/usr/lib/ants:/mrtrix3/bin
 
-FSLDIR=/usr/local/fsl/5.0
-FSLOUTPUTTYPE=NIFTI_GZ
-FSLMULTIFILEQUIT=TRUE
-FSLCLSH=$FSLDIR/bin/fsltcsh
-FSLWISH=$FSLDIR/bin/fslwish
-FSLCONFDIR=$FSLDIR/config
-FSLMACHTYPE=$FSLDIR/config/fslmachtype.sh
+export FSLDIR=/usr/local/fsl/5.0
+export FSLOUTPUTTYPE=NIFTI_GZ
+export FSLMULTIFILEQUIT=TRUE
+export FSLCLSH=$FSLDIR/bin/fsltcsh
+export FSLWISH=$FSLDIR/bin/fslwish
+export FSLCONFDIR=$FSLDIR/config
+export FSLMACHTYPE=$FSLDIR/config/fslmachtype.sh
 
 ## define number of threads to use
 NCORE=1
