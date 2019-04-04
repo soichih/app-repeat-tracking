@@ -1,24 +1,39 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=4gb,walltime=00:05:00
-#PBS -N mrtrix3_act_rep
-#PBS -V
 
-module load singularity 2> /dev/null
+# ## file inputs
+# ANAT=./t1.nii.gz # `jq -r '.anat' config.json`
 
-## container version
-tag=3.0_RC3
+# ## CSD fits
+# LMAX2=./lmax2.nii.gz # `jq -r '.lmax2' config.json`
+# LMAX4=./lmax4.nii.gz # `jq -r '.lmax4' config.json`
+# LMAX6=./lmax6.nii.gz # `jq -r '.lmax6' config.json`
+# LMAX8=./lmax8.nii.gz # `jq -r '.lmax8' config.json`
+# LMAX10=./lmax10.nii.gz # `jq -r '.lmax10' config.json`
+# LMAX12=./lmax12.nii.gz # `jq -r '.lmax12' config.json`
+# LMAX14=./lmax14.nii.gz # `jq -r '.lmax14' config.json`
 
-## make OSG job file
-./make_submit.sh
+## use what exists to build file list
 
-echo "Tracking data..."
-time singularity exec -e docker://brainlife/mrtrix3:$tag ./mrtrix3_tracking.sh
+cat << EOF > submit.job
+universe = vanilla
+executable = mrtrix3_tracking.sh
 
-## check for the output for success
-if [ -f out/track.tck ]; then
-    exit 0
-else
-    echo "Final tractography file missing."
-    exit 1
-fi
+Requirements = HAS_SINGULARITY == TRUE
+
++ProjectName="Diffusion-predictor"
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
++SingularityBindCVMFS = True
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+
+transfer_input_files = `jq -r '.anat' config.json`,`jq -r '.lmax2' config.json`,`jq -r '.lmax4' config.json`,`jq -r '.lmax6' config.json`
+transfer_output_files = out
+
+output = stdout.log
+error = stderr.log
+log = job.log
+
+queue
+EOF
 
