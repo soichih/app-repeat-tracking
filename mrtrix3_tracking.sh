@@ -50,43 +50,43 @@ mkdir out/
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
-if [ ! -f $LMAX2 ]; then
+if [ -f $LMAX2 ]; then
     echo "Converting lmax2..."
     mrconvert ${LMAX2} lmax2.mif -force -nthreads $NCORE -quiet
     LMAXS=2
 fi
 
-if [ ! -f $LMAX4 ]; then
+if [ -f $LMAX4 ]; then
     echo "Converting lmax4..."
     mrconvert ${LMAX4} lmax4.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 4"
 fi
 
-if [ ! -f $LMAX6 ]; then
+if [ -f $LMAX6 ]; then
     echo "Converting lmax6..."
     mrconvert ${LMAX6} lmax6.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 6"
 fi
 
-if [ ! -f $LMAX8 ]; then
+if [ -f $LMAX8 ]; then
     echo "Converting lmax8..."
     mrconvert ${LMAX8} lmax8.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 8"
 fi
 
-if [ ! -f $LMAX10 ]; then
+if [ -f $LMAX10 ]; then
     echo "Converting lmax10..."
     mrconvert ${LMAX10} lmax10.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 10"
 fi
 
-if [ ! -f $LMAX12 ]; then
+if [ -f $LMAX12 ]; then
     echo "Converting lmax12..."
     mrconvert ${LMAX12} lmax12.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 12"
 fi
 
-if [ ! -f $LMAX14 ]; then
+if [ -f $LMAX14 ]; then
     echo "Converting lmax14..."
     mrconvert ${LMAX14} lmax14.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 14"
