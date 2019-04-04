@@ -12,6 +12,8 @@
 # LMAX12=./lmax12.nii.gz # `jq -r '.lmax12' config.json`
 # LMAX14=./lmax14.nii.gz # `jq -r '.lmax14' config.json`
 
+NFIB=`jq -r '.num_fibers' config.json`
+
 ## use what exists to build file list
 
 cat << EOF > submit.job
@@ -33,6 +35,8 @@ transfer_output_files = out
 output = stdout.log
 error = stderr.log
 log = condor.out
+
+argument = $NFIB
 
 queue
 EOF
