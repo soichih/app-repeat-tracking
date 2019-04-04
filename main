@@ -16,7 +16,7 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 ## use what exists to build file list
 
-cat << EOF > submit.job
+cat << EOF
 universe = vanilla
 arguments = $NFIB
 executable = mrtrix3_tracking.sh
