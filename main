@@ -18,6 +18,7 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 cat << EOF > submit.job
 universe = vanilla
+arguments = $NFIB
 executable = mrtrix3_tracking.sh
 
 Requirements = HAS_SINGULARITY == TRUE
@@ -32,11 +33,10 @@ when_to_transfer_output = ON_EXIT
 transfer_input_files = `jq -r '.anat' config.json`,`jq -r '.lmax2' config.json`,`jq -r '.lmax4' config.json`,`jq -r '.lmax6' config.json`
 transfer_output_files = out
 
+stream_output = True
 output = stdout.log
 error = stderr.log
 log = condor.out
-
-argument = $NFIB
 
 queue
 EOF
