@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=4gb,walltime=01:00:00
+#PBS -l nodes=1:ppn=1,vmem=4gb,walltime=00:05:00
 #PBS -N mrtrix3_act_rep
 #PBS -V
 
@@ -7,6 +7,9 @@ module load singularity 2> /dev/null
 
 ## container version
 tag=3.0_RC3
+
+## make OSG job file
+./make_submit.sh
 
 echo "Tracking data..."
 time singularity exec -e docker://brainlife/mrtrix3:$tag ./mrtrix3_tracking.sh

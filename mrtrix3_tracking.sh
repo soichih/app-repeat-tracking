@@ -23,22 +23,23 @@ set -e
 ##
 
 ## file inputs
-ANAT=`jq -r '.anat' config.json`
+ANAT=./t1.nii.gz # `jq -r '.anat' config.json`
 
 ## CSD fits
-LMAX2=`jq -r '.lmax2' config.json`
-LMAX4=`jq -r '.lmax4' config.json`
-LMAX6=`jq -r '.lmax6' config.json`
-LMAX8=`jq -r '.lmax8' config.json`
-LMAX10=`jq -r '.lmax10' config.json`
-LMAX12=`jq -r '.lmax12' config.json`
-LMAX14=`jq -r '.lmax14' config.json`
+LMAX2=./lmax2.nii.gz # `jq -r '.lmax2' config.json`
+LMAX4=./lmax4.nii.gz # `jq -r '.lmax4' config.json`
+LMAX6=./lmax6.nii.gz # `jq -r '.lmax6' config.json`
+LMAX8=./lmax8.nii.gz # `jq -r '.lmax8' config.json`
+LMAX10=./lmax10.nii.gz # `jq -r '.lmax10' config.json`
+LMAX12=./lmax12.nii.gz # `jq -r '.lmax12' config.json`
+LMAX14=./lmax14.nii.gz # `jq -r '.lmax14' config.json`
 
 ## tracking params
-CURVS=`jq -r '.curvs' config.json`
-NUM_FIBERS=`jq -r '.num_fibers' config.json`
-MIN_LENGTH=`jq -r '.min_length' config.json`
-MAX_LENGTH=`jq -r '.max_length' config.json`
+CURVS="5 10 20 40 80" # `jq -r '.curvs' config.json`
+MIN_LENGTH=10  # `jq -r '.min_length' config.json`
+MAX_LENGTH=200 # `jq -r '.max_length' config.json`
+
+NUM_FIBERS=$1 # `jq -r '.num_fibers' config.json`
 
 ##
 ## begin execution
@@ -49,43 +50,43 @@ mkdir out/
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
-if [ -f $LMAX2 ]; then
+if [ ! -z $LMAX2 ]; then
     echo "Converting lmax2..."
     mrconvert ${LMAX2} lmax2.mif -force -nthreads $NCORE -quiet
     LMAXS=2
 fi
 
-if [ -f $LMAX4 ]; then
+if [ ! -z $LMAX4 ]; then
     echo "Converting lmax4..."
     mrconvert ${LMAX4} lmax4.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 4"
 fi
 
-if [ -f $LMAX6 ]; then
+if [ ! -z $LMAX6 ]; then
     echo "Converting lmax6..."
     mrconvert ${LMAX6} lmax6.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 6"
 fi
 
-if [ -f $LMAX8 ]; then
+if [ ! -z $LMAX8 ]; then
     echo "Converting lmax8..."
     mrconvert ${LMAX8} lmax8.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 8"
 fi
 
-if [ -f $LMAX10 ]; then
+if [ ! -z $LMAX10 ]; then
     echo "Converting lmax10..."
     mrconvert ${LMAX10} lmax10.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 10"
 fi
 
-if [ -f $LMAX12 ]; then
+if [ ! -z $LMAX12 ]; then
     echo "Converting lmax12..."
     mrconvert ${LMAX12} lmax12.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 12"
 fi
 
-if [ -f $LMAX14 ]; then
+if [ ! -z $LMAX14 ]; then
     echo "Converting lmax14..."
     mrconvert ${LMAX14} lmax14.mif -force -nthreads $NCORE -quiet
     LMAXS="$LMAXS 14"
