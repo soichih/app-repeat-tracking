@@ -7,6 +7,8 @@ NCORE=1
 set -x
 set -e
 
+hostname
+
 ##
 ## parse inputs
 ##
