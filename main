@@ -15,37 +15,37 @@ LMAX14=`jq -r '.lmax14' config.json`
 TFILE=$ANAT
 
 if [ -f $LMAX2 ]; then
-    echo "Transferring lmax2..."
+    #echo "Transferring lmax2..."
     TFILE=$TFILE,$LMAX2
 fi
 
 if [ -f $LMAX4 ]; then
-    echo "Transferring lmax4..."
+    #echo "Transferring lmax4..."
     TFILE=$TFILE,$LMAX4
 fi
 
 if [ -f $LMAX6 ]; then
-    echo "Transferring lmax6..."
+    #echo "Transferring lmax6..."
     TFILE=$TFILE,$LMAX6
 fi
 
 if [ -f $LMAX8 ]; then
-    echo "Transferring lmax8..."
+    #echo "Transferring lmax8..."
     TFILE=$TFILE,$LMAX8
 fi
 
 if [ -f $LMAX10 ]; then
-    echo "Transferring lmax10..."
+    #echo "Transferring lmax10..."
     TFILE=$TFILE,$LMAX10
 fi
 
 if [ -f $LMAX12 ]; then
-    echo "Transferring lmax12..."
+    #echo "Transferring lmax12..."
     TFILE=$TFILE,$LMAX12
 fi
 
 if [ -f $LMAX14 ]; then
-    echo "Transferring lmax14..."
+    #echo "Transferring lmax14..."
     TFILE=$TFILE,$LMAX14
 fi
 
