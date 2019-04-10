@@ -100,7 +100,8 @@ echo "Creating 5-Tissue-Type (5TT) tracking mask..."
 ## generate gm-wm interface seed mask
 5tt2gmwmi 5tt.mif gmwmi_seed.mif -force -nthreads $NCORE -quiet
 
-for rep in 02 03 04 05 06 07 08 09 10; do
+# 07 08 09 10
+for rep in 02 03 04 05 06; do
 
     echo "Tracking repeat ${rep}..."
     
