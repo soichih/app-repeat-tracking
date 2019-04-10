@@ -77,8 +77,7 @@ periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) 
 periodic_remove = (NumJobStarts == 5)
 
 transfer_input_files = $TFILE
-transfer_output_files = rep02,rep03,rep04,rep05,rep06 
-# ,rep07,rep08,rep09,rep10
+transfer_output_files = rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
 
 stream_output = True
 output = stdout.log
