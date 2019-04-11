@@ -24,17 +24,14 @@ LMAX12=`jq -r '.lmax12' config.json`
 LMAX14=`jq -r '.lmax14' config.json`
 
 ## tracking params
-CURVS=`jq -r '.curvs' config.json`
+CURVS="5 10 20 40 80"
+MIN_LENGTH=10
+MAX_LENGTH=200
 NUM_FIBERS=`jq -r '.num_fibers' config.json`
-MIN_LENGTH=`jq -r '.min_length' config.json`
-MAX_LENGTH=`jq -r '.max_length' config.json`
 
 ##
 ## begin execution
 ##
-
-rm -rf out/
-mkdir out/
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
@@ -83,25 +80,6 @@ fi
 ## convert anatomy
 mrconvert $ANAT ${anat}.mif -force -nthreads $NCORE -quiet
 
-echo "Tractography will be created on lmax(s): $LMAXS"
-
-## compute the required size of the final output
-TOTAL=0
-
-for lmax in $LMAXS; do
-    for curv in $CURVS; do
-	TOTAL=$(($TOTAL+$NUM_FIBERS))
-    done
-done
-
-for lmax in $LMAXS; do
-    for curv in $CURVS; do
-	TOTAL=$(($TOTAL+$NUM_FIBERS))
-    done
-done
-
-echo "Expecting $TOTAL streamlines in track.tck."
-
 echo "Creating 5-Tissue-Type (5TT) tracking mask..."
 
 ## convert anatomy 
@@ -110,63 +88,91 @@ echo "Creating 5-Tissue-Type (5TT) tracking mask..."
 ## generate gm-wm interface seed mask
 5tt2gmwmi 5tt.mif gmwmi_seed.mif -force -nthreads $NCORE -quiet
 
-echo "Performing Anatomically Constrained Tractography (ACT)..."
+for rep in 02 03 04 05 06 07 08 09 10; do
 
-## MRTrix3 Probabilistic
-echo "Tracking iFOD2 streamlines..."
-for lmax in $LMAXS; do
+    echo "Tracking repeat ${rep}..."
+    
+    mkdir rep${rep}
+    outdir=rep${rep}
 
-    fod=lmax$lmax.mif
+    echo "Tractography will be created on lmax(s): $LMAXS"
+
+    ## compute the required size of the final output
+    TOTAL=0
+
+    for lmax in $LMAXS; do
+	for curv in $CURVS; do
+	    TOTAL=$(($TOTAL+$NUM_FIBERS))
+	done
+    done
+
+    for lmax in $LMAXS; do
+	for curv in $CURVS; do
+	    TOTAL=$(($TOTAL+$NUM_FIBERS))
+	done
+    done
+    
+    echo "Expecting $TOTAL streamlines in track.tck."
+
+    echo "Performing Anatomically Constrained Tractography (ACT)..."
+
+    ## MRTrix3 Probabilistic
+    echo "Tracking iFOD2 streamlines..."
+    for lmax in $LMAXS; do
+
+	fod=lmax$lmax.mif
 	
-    for curv in $CURVS; do
+	for curv in $CURVS; do
 
-	echo "Tracking iFOD2 streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
-	tckgen $fod -algorithm iFOD2 \
-	       -select $NUM_FIBERS -act 5tt.mif -backtrack -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
-	       -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
-	       wb_iFOD2_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
+	    echo "Tracking iFOD2 streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
+	    tckgen $fod -algorithm iFOD2 \
+		   -select $NUM_FIBERS -act 5tt.mif -backtrack -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
+		   -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
+		   ${outdir}/wb_iFOD2_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
 	    
+	done
     done
-done
-
-## MRTrix 0.2.12 deterministic
-echo "Tracking SD_STREAM streamlines..."
     
-for lmax in $LMAXS; do
-
-    fod=lmax$lmax.mif
+    ## MRTrix 0.2.12 deterministic
+    echo "Tracking SD_STREAM streamlines..."
     
-    for curv in $CURVS; do
-
-	echo "Tracking SD_STREAM streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
-	tckgen $fod -algorithm SD_STREAM \
-	       -select $NUM_FIBERS -act 5tt.mif -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
-	       -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
-	       wb_SD_STREAM_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
+    for lmax in $LMAXS; do
 	
+	fod=lmax$lmax.mif
+    
+	for curv in $CURVS; do
+
+	    echo "Tracking SD_STREAM streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
+	    tckgen $fod -algorithm SD_STREAM \
+		   -select $NUM_FIBERS -act 5tt.mif -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
+		   -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
+		   ${outdir}/wb_SD_STREAM_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
+	
+	done
     done
+
+    ## combine different parameters into 1 output
+    tckedit ${outdir}/wb*.tck ${outdir}/track.tck -force -nthreads $NCORE -quiet
+
+    ## find the final size
+    COUNT=`tckinfo ${outdir}/track.tck | grep -w 'count' | awk '{print $2}'`
+    echo "Ensemble tractography generated $COUNT of a requested $TOTAL"
+
+    ## if count is wrong, say so / fail / clean for fast re-tracking
+    if [ $COUNT -ne $TOTAL ]; then
+	echo "Incorrect count. Tractography repeat $rep failed."
+	rm -f ${outdir}/wb*.tck
+	#rm -f out/track.tck
+	#exit 1
+    else
+	echo "Correct count. Tractography complete."
+	rm -f ${outdir}/wb*.tck
+    fi
+
+    ## simple summary text
+    tckinfo ${outdir}/track.tck > ${outdir}/tckinfo.txt
+
 done
-
-## combine different parameters into 1 output
-tckedit wb*.tck out/track.tck -force -nthreads $NCORE -quiet
-
-## find the final size
-COUNT=`tckinfo out/track.tck | grep -w 'count' | awk '{print $2}'`
-echo "Ensemble tractography generated $COUNT of a requested $TOTAL"
-
-## if count is wrong, say so / fail / clean for fast re-tracking
-if [ $COUNT -ne $TOTAL ]; then
-    echo "Incorrect count. Tractography failed."
-    rm -f wb*.tck
-    rm -f out/track.tck
-    exit 1
-else
-    echo "Correct count. Tractography complete."
-    rm -f wb*.tck
-fi
-
-## simple summary text
-tckinfo out/track.tck > out/tckinfo.txt
 
 ## clear mrtrix files
 rm -f *.mif
