@@ -92,12 +92,13 @@ if [ -f $LMAX14 ]; then
 fi
 
 ## convert anatomy
-mrconvert $ANAT ${anat}.mif -force -nthreads $NCORE -quiet
+mrconvert $ANAT anat.mif -force -nthreads $NCORE -quiet
 
 echo "Creating 5-Tissue-Type (5TT) tracking mask..."
 
 ## convert anatomy 
-5ttgen fsl ${anat}.mif ./intermediate/5tt.mif -nocrop -sgm_amyg_hipp -tempdir ./tmp -force -nthreads $NCORE -quiet
+5ttgen fsl anat.mif ./intermediate/5tt.mif -nocrop -sgm_amyg_hipp -tempdir ./tmp -force -nthreads $NCORE -quiet
 
 ## generate gm-wm interface seed mask
-5tt2gmwmi 5tt.mif ./intermediate/gmwmi_seed.mif -force -nthreads $NCORE -quiet
+5tt2gmwmi ./intermediate/5tt.mif ./intermediate/gmwmi_seed.mif -force -nthreads $NCORE -quiet
+
