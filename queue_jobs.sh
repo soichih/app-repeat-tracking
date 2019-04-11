@@ -11,6 +11,8 @@ export FSLBROWSER=/etc/alternatives/x-www-browser
 export FSLDIR=/usr/share/fsl/5.0
 export FSLOUTPUTTYPE=NIFTI_GZ
 
+NCORE=1
+
 ## CSD fits
 LMAX2=./intermediate/lmax2.mif # `jq -r '.lmax2' config.json`
 LMAX4=./intermediate/lmax4.mif # `jq -r '.lmax4' config.json`
