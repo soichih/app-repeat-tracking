@@ -12,13 +12,13 @@ export FSLDIR=/usr/share/fsl/5.0
 export FSLOUTPUTTYPE=NIFTI_GZ
 
 ## CSD fits
-LMAX2=./lmax2.mif # `jq -r '.lmax2' config.json`
-LMAX4=./lmax4.mif # `jq -r '.lmax4' config.json`
-LMAX6=./lmax6.mif # `jq -r '.lmax6' config.json`
-LMAX8=./lmax8.mif # `jq -r '.lmax8' config.json`
-LMAX10=./lmax10.mif # `jq -r '.lmax10' config.json`
-LMAX12=./lmax12.mif # `jq -r '.lmax12' config.json`
-LMAX14=./lmax14.mif # `jq -r '.lmax14' config.json`
+LMAX2=./intermediate/lmax2.mif # `jq -r '.lmax2' config.json`
+LMAX4=./intermediate/lmax4.mif # `jq -r '.lmax4' config.json`
+LMAX6=./intermediate/lmax6.mif # `jq -r '.lmax6' config.json`
+LMAX8=./intermediate/lmax8.mif # `jq -r '.lmax8' config.json`
+LMAX10=./intermediate/lmax10.mif # `jq -r '.lmax10' config.json`
+LMAX12=./intermediate/lmax12.mif # `jq -r '.lmax12' config.json`
+LMAX14=./intermediate/lmax14.mif # `jq -r '.lmax14' config.json`
 
 ## tracking params
 CURVS="5 10 20 40 80" # `jq -r '.curvs' config.json`
