@@ -85,7 +85,7 @@ echo "Performing Anatomically Constrained Tractography (ACT)..."
 echo "Tracking iFOD2 streamlines..."
 for lmax in $LMAXS; do
 
-    fod=lmax$lmax.mif
+    fod=./intermediate/lmax$lmax.mif
 
     for curv in $CURVS; do
 
@@ -103,7 +103,7 @@ echo "Tracking SD_STREAM streamlines..."
 
 for lmax in $LMAXS; do
 
-    fod=lmax$lmax.mif
+    fod=./intermediate/lmax$lmax.mif
 
     for curv in $CURVS; do
 

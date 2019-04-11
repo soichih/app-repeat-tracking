@@ -132,6 +132,26 @@ transfer_output_files = rep05
 arguments = $NFIB 05
 queue
 
+transfer_output_files = rep06
+arguments = $NFIB 06
+queue
+
+transfer_output_files = rep07
+arguments = $NFIB 07
+queue
+
+transfer_output_files = rep08
+arguments = $NFIB 08
+queue
+
+transfer_output_files = rep09
+arguments = $NFIB 09
+queue
+
+transfer_output_files = rep10
+arguments = $NFIB 10
+queue
+
 EOF
 
 cat > submit.dag << EOF
