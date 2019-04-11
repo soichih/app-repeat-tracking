@@ -53,9 +53,9 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 ## use what exists to build file list
 
-cat << EOF
+cat > part1.submit << EOF
 universe = vanilla
-executable = mrtrix3_tracking.sh
+executable = submit_job.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
@@ -80,36 +80,66 @@ transfer_output_files = intermediate
 # rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
 
 stream_output = True
-output = stdout.log
-error = stderr.log
-log = condor.out
+output = part1.stdout.log
+error = part1.stderr.log
+log = part1.condor.out
 
+queue
+EOF
+
+cat > part2.submit << EOF
+universe = vanilla
+executable = queue_job.sh
+
+Requirements = HAS_SINGULARITY == TRUE
+
++ProjectName="Diffusion-predictor"
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
++SingularityBindCVMFS = True
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
+periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
+# remove job if it fails 5 times.
+periodic_remove = (NumJobStarts == 5)
+
+transfer_input_files = intermediate
+
+stream_output = True
+output = part2.stdout.\$(Process).log
+error = part2.stderr.\$(Process).log
+log = part2.condor.out
+
+transfer_output_files = rep02
 arguments = $NFIB rep02
 queue
 
+transfer_output_files = rep03
 arguments = $NFIB rep03
 queue
 
+transfer_output_files = rep04
 arguments = $NFIB rep04
 queue
 
+transfer_output_files = rep05
 arguments = $NFIB rep05
 queue
 
-arguments = $NFIB rep06
-queue
-
-arguments = $NFIB rep07
-queue
-
-arguments = $NFIB rep08
-queue
-
-arguments = $NFIB rep09
-queue
-
-arguments = $NFIB rep10
-queue
-
 EOF
+
+cat > submit.dag << EOF
+JOB  PART1  part1.submit
+JOB  PART2  part2.submit
+PARENT PART1 CHILD PART2
+EOF
+
+condor_submit_dag submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
+#condor_submit_dag -terse submit.dag | cut -f 1 -d " " > jobid
 
