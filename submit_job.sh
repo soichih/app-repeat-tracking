@@ -47,6 +47,8 @@ NUM_FIBERS=$1
 
 echo "Converting estimated CSD fit(s) into MRTrix3 format..."
 
+mkdir intermediate
+
 if [ -f $LMAX2 ]; then
     echo "Converting lmax2..."
     mrconvert ${LMAX2} ./intermediate/lmax2.mif -force -nthreads $NCORE -quiet
