@@ -89,7 +89,7 @@ EOF
 
 cat > part2.submit << EOF
 universe = vanilla
-executable = queue_job.sh
+executable = queue_jobs.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
@@ -135,17 +135,6 @@ queue
 EOF
 
 cat > submit.dag << EOF
-export LD_LIBRARY_PATH=/usr/lib/fsl/5.0:/usr/share/fsl/5.0/bin:/.singularity.d/libs
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/fsl/5.0/bin:/usr/lib/ants:/mrtrix3/bin
-
-export FSLMULTIFILEQUIT=TRUE
-export FSLCLUSTER_MAILOPTS=n
-export FSLTCLSH=/usr/bin/tclsh
-export FSLWISH=/usr/bin/wish
-export FSLBROWSER=/etc/alternatives/x-www-browser
-export FSLDIR=/usr/share/fsl/5.0
-export FSLOUTPUTTYPE=NIFTI_GZ
-
 JOB  PART1  part1.submit
 JOB  PART2  part2.submit
 PARENT PART1 CHILD PART2

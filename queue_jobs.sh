@@ -1,5 +1,16 @@
 #!/bin/bash -l
 
+export LD_LIBRARY_PATH=/usr/lib/fsl/5.0:/usr/share/fsl/5.0/bin:/.singularity.d/libs
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/fsl/5.0/bin:/usr/lib/ants:/mrtrix3/bin
+
+export FSLMULTIFILEQUIT=TRUE
+export FSLCLUSTER_MAILOPTS=n
+export FSLTCLSH=/usr/bin/tclsh
+export FSLWISH=/usr/bin/wish
+export FSLBROWSER=/etc/alternatives/x-www-browser
+export FSLDIR=/usr/share/fsl/5.0
+export FSLOUTPUTTYPE=NIFTI_GZ
+
 ## CSD fits
 LMAX2=./lmax2.mif # `jq -r '.lmax2' config.json`
 LMAX4=./lmax4.mif # `jq -r '.lmax4' config.json`
