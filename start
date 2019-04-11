@@ -55,7 +55,7 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 cat > part1.submit << EOF
 universe = vanilla
-executable = submit_jobs.sh
+executable = submit_job.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
