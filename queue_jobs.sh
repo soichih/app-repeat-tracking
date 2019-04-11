@@ -91,7 +91,7 @@ for lmax in $LMAXS; do
 
 	echo "Tracking iFOD2 streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
 	tckgen $fod -algorithm iFOD2 \
-	       -select $NUM_FIBERS -act 5tt.mif -backtrack -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
+	       -select $NUM_FIBERS -act ./intermediate/5tt.mif -backtrack -crop_at_gmwmi -seed_gmwmi ./intermediate/gmwmi_seed.mif \
 	       -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
 	       ${OUTDIR}/wb_iFOD2_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
     
@@ -109,7 +109,7 @@ for lmax in $LMAXS; do
 
 	echo "Tracking SD_STREAM streamlines at Lmax ${lmax} with a maximum curvature of ${curv} degrees..."
 	tckgen $fod -algorithm SD_STREAM \
-	       -select $NUM_FIBERS -act 5tt.mif -crop_at_gmwmi -seed_gmwmi gmwmi_seed.mif \
+	       -select $NUM_FIBERS -act ./intermediate/5tt.mif -crop_at_gmwmi -seed_gmwmi ./intermediate/gmwmi_seed.mif \
 	       -angle ${curv} -minlength $MIN_LENGTH -maxlength $MAX_LENGTH \
 	       ${OUTDIR}/wb_SD_STREAM_lmax${lmax}_curv${curv}.tck -force -nthreads $NCORE -quiet
 
