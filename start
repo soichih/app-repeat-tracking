@@ -117,19 +117,19 @@ error = part2.stderr.\$(Process).log
 log = part2.condor.out
 
 transfer_output_files = rep02
-arguments = $NFIB rep02
+arguments = $NFIB 02
 queue
 
 transfer_output_files = rep03
-arguments = $NFIB rep03
+arguments = $NFIB 03
 queue
 
 transfer_output_files = rep04
-arguments = $NFIB rep04
+arguments = $NFIB 04
 queue
 
 transfer_output_files = rep05
-arguments = $NFIB rep05
+arguments = $NFIB 05
 queue
 
 EOF
