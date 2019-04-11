@@ -55,7 +55,6 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 cat << EOF
 universe = vanilla
-arguments = $NFIB
 executable = mrtrix3_tracking.sh
 
 Requirements = HAS_SINGULARITY == TRUE
@@ -77,13 +76,40 @@ periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) 
 periodic_remove = (NumJobStarts == 5)
 
 transfer_input_files = $TFILE
-transfer_output_files = rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
+transfer_output_files = intermediate
+# rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
 
 stream_output = True
 output = stdout.log
 error = stderr.log
 log = condor.out
 
+arguments = $NFIB rep02
 queue
+
+arguments = $NFIB rep03
+queue
+
+arguments = $NFIB rep04
+queue
+
+arguments = $NFIB rep05
+queue
+
+arguments = $NFIB rep06
+queue
+
+arguments = $NFIB rep07
+queue
+
+arguments = $NFIB rep08
+queue
+
+arguments = $NFIB rep09
+queue
+
+arguments = $NFIB rep10
+queue
+
 EOF
 
