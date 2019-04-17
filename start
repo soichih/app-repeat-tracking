@@ -59,7 +59,7 @@ executable = submit_job.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
-+ProjectName="Diffusion-predictor"
+# +ProjectName="Diffusion-predictor"
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
 +SingularityBindCVMFS = True
 
