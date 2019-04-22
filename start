@@ -3,6 +3,10 @@
 ## file inputs
 ANAT=`jq -r '.anat' config.json`
 
+MASK=`jq -r '.mask' config.json`
+PARC=`jq -r '.parc' config.json`
+FA=`jq -r '.fa' config.json`
+
 ## CSD fits
 LMAX2=`jq -r '.lmax2' config.json`
 LMAX4=`jq -r '.lmax4' config.json`
@@ -12,7 +16,9 @@ LMAX10=`jq -r '.lmax10' config.json`
 LMAX12=`jq -r '.lmax12' config.json`
 LMAX14=`jq -r '.lmax14' config.json`
 
+## list of files to move
 TFILE=$ANAT
+NFILE=$MASK,$PARC,$FA
 
 if [ -f $LMAX2 ]; then
     #echo "Transferring lmax2..."
@@ -59,7 +65,6 @@ executable = submit_job.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
-# +ProjectName="Diffusion-predictor"
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
 +SingularityBindCVMFS = True
 
@@ -79,7 +84,7 @@ transfer_input_files = $TFILE
 transfer_output_files = intermediate
 # rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
 
-stream_output = True
+#stream_output = True
 output = part1.stdout.log
 error = part1.stderr.log
 log = part1.condor.out
@@ -93,7 +98,6 @@ executable = queue_jobs.sh
 
 Requirements = HAS_SINGULARITY == TRUE
 
-# +ProjectName="Diffusion-predictor"
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
 +SingularityBindCVMFS = True
 
@@ -111,7 +115,7 @@ periodic_remove = (NumJobStarts == 5)
 
 transfer_input_files = intermediate
 
-stream_output = True
+#stream_output = True
 output = part2.stdout.\$(Process).log
 error = part2.stderr.\$(Process).log
 log = part2.condor.out
@@ -154,10 +158,86 @@ queue
 
 EOF
 
+cat > part3.submit << EOF
+universe = vanilla
+executable = network_jobs.sh
+
+# Requirements = HAS_SINGULARITY == TRUE
+# +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
+# +SingularityBindCVMFS = True
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
+periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
+# remove job if it fails 5 times.
+periodic_remove = (NumJobStarts == 5)
+
+# transfer_input_files = main,$NFILE
+
+#stream_output = True
+output = part3.stdout.\$(Process).log
+error = part3.stderr.\$(Process).log
+log = part3.condor.out
+
+transfer_input_files = main,$NFILE,rep02
+transfer_output_files = net02
+arguments = net02
+queue
+
+transfer_input_files = main,$NFILE,rep03
+transfer_output_files = net03
+arguments = net03
+queue
+
+transfer_input_files = main,$NFILE,rep04
+transfer_output_files = net04
+arguments = net05
+queue
+
+transfer_input_files = main,$NFILE,rep05
+transfer_output_files = net05
+arguments = net05
+queue
+
+transfer_input_files = main,$NFILE,rep06
+transfer_output_files = net06
+arguments = net06
+queue
+
+transfer_input_files = main,$NFILE,rep07
+transfer_output_files = net07
+arguments = net07
+queue
+
+transfer_input_files = main,$NFILE,rep08
+transfer_output_files = net08
+arguments = net08
+queue
+
+transfer_input_files = main,$NFILE,rep09
+transfer_output_files = net09
+arguments = net09
+queue
+
+transfer_input_files = main,$NFILE,rep10
+transfer_output_files = net10
+arguments = net10
+queue
+
+EOF
+
 cat > submit.dag << EOF
 JOB  PART1  part1.submit
 JOB  PART2  part2.submit
+JOB  PART3  part3.submit
 PARENT PART1 CHILD PART2
+PARENT PART2 CHILD PART3
 EOF
 
 condor_submit_dag submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
