@@ -3,5 +3,5 @@
 set -e
 set -x
 
-module load matlab/2017a
+module load matlab/R2017a
 ./main $1
