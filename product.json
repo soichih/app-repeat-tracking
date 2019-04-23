@@ -1,29 +1,29 @@
 {
-       "rep02": {
+       "net02": {
                "tags": ["rep02"]
        },
-       "rep03": {
+       "net03": {
                "tags": ["rep03"]
        },
-       "rep04": {
+       "net04": {
                "tags": ["rep04"]
        },
-       "rep05": {
+       "net05": {
                "tags": ["rep05"]
        },
-       "rep06": {
+       "net06": {
                "tags": ["rep06"]
        },
-       "rep07": {
+       "net07": {
                "tags": ["rep07"]
        },
-       "rep08": {
+       "net08": {
                "tags": ["rep08"]
        },
-       "rep09": {
+       "net09": {
                "tags": ["rep09"]
        },
-       "rep10": {
+       "net10": {
                "tags": ["rep10"]
        }
 }
