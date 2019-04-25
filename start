@@ -162,9 +162,9 @@ cat > part3.submit << EOF
 universe = vanilla
 executable = network_jobs.sh
 
-# Requirements = HAS_SINGULARITY == TRUE
-# +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
-# +SingularityBindCVMFS = True
+Requirements = HAS_SINGULARITY == TRUE
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mcr:neurodebian1604-r2017a"
++SingularityBindCVMFS = True
 
 should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
