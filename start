@@ -178,7 +178,8 @@ periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) 
 # remove job if it fails 5 times.
 periodic_remove = (NumJobStarts == 5)
 
-requirements = OSGVO_OS_STRING == "RHEL 7" && Arch == "X86_64" && HAS_MODULES == True 
+# requirements = OSGVO_OS_STRING == "RHEL 7" && Arch == "X86_64" && HAS_MODULES == True 
+request_memory = 12GB
 
 #stream_output = True
 output = part3.stdout.\$(Process).log
