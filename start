@@ -180,8 +180,6 @@ periodic_remove = (NumJobStarts == 5)
 
 requirements = OSGVO_OS_STRING == "RHEL 7" && Arch == "X86_64" && HAS_MODULES == True 
 
-# transfer_input_files = main,$NFILE
-
 #stream_output = True
 output = part3.stdout.\$(Process).log
 error = part3.stderr.\$(Process).log
