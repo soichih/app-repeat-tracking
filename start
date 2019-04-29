@@ -198,7 +198,7 @@ queue
 
 transfer_input_files = compiled/main,$NFILE,rep04/track.tck
 transfer_output_files = net04
-arguments = net05
+arguments = net04
 queue
 
 transfer_input_files = compiled/main,$NFILE,rep05/track.tck
