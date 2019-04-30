@@ -242,6 +242,6 @@ PARENT PART2 CHILD PART3
 SCRIPT POST PART3 clean.sh 
 EOF
 
-condor_submit_dag submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
+condor_submit_dag -f submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
 #condor_submit_dag -terse submit.dag | cut -f 1 -d " " > jobid
 
