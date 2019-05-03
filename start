@@ -169,6 +169,10 @@ universe = vanilla
 executable = network_jobs.sh
 
 $project
+Requirements = HAS_SINGULARITY == TRUE
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mcr:neurodebian1604-r2017a"
++SingularityBindCVMFS = True
+
 should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
 
@@ -181,56 +185,55 @@ periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) 
 # remove job if it fails 5 times.
 periodic_remove = (NumJobStarts == 5)
 
-requirements = OSGVO_OS_STRING == "RHEL 7" && Arch == "X86_64" && HAS_MODULES == True 
-
-# transfer_input_files = main,$NFILE
+# requirements = OSGVO_OS_STRING == "RHEL 7" && Arch == "X86_64" && HAS_MODULES == True 
+request_memory = 12GB
 
 #stream_output = True
 output = part3.stdout.\$(Process).log
 error = part3.stderr.\$(Process).log
 log = part3.condor.out
 
-transfer_input_files = main,$NFILE,rep02
+transfer_input_files = compiled/main,$NFILE,rep02/track.tck
 transfer_output_files = net02
 arguments = net02
 queue
 
-transfer_input_files = main,$NFILE,rep03
+transfer_input_files = compiled/main,$NFILE,rep03/track.tck
 transfer_output_files = net03
 arguments = net03
 queue
 
-transfer_input_files = main,$NFILE,rep04
+transfer_input_files = compiled/main,$NFILE,rep04/track.tck
 transfer_output_files = net04
-arguments = net05
+arguments = net04
 queue
 
-transfer_input_files = main,$NFILE,rep05
+transfer_input_files = compiled/main,$NFILE,rep05/track.tck
 transfer_output_files = net05
 arguments = net05
 queue
 
-transfer_input_files = main,$NFILE,rep06
+transfer_input_files = compiled/main,$NFILE,rep06/track.tck
 transfer_output_files = net06
 arguments = net06
 queue
 
-transfer_input_files = main,$NFILE,rep07
+transfer_input_files = compiled/main,$NFILE,rep07/track.tck
 transfer_output_files = net07
 arguments = net07
 queue
 
-transfer_input_files = main,$NFILE,rep08
+transfer_input_files = compiled/main,$NFILE,rep08/track.tck
 transfer_output_files = net08
 arguments = net08
 queue
 
-transfer_input_files = main,$NFILE,rep09
+transfer_input_files = compiled/main,$NFILE,rep09/track.tck
 transfer_output_files = net09
 arguments = net09
 queue
 
-transfer_input_files = main,$NFILE,rep10
+transfer_input_files = compiled/main,$NFILE,rep10/track.tck
 transfer_output_files = net10
 arguments = net10
 queue
@@ -239,12 +242,13 @@ EOF
 
 cat > submit.dag << EOF
 JOB  PART1  part1.submit
-#JOB  PART2  part2.submit
-#JOB  PART3  part3.submit
-#PARENT PART1 CHILD PART2
-#PARENT PART2 CHILD PART3
+JOB  PART2  part2.submit
+JOB  PART3  part3.submit
+PARENT PART1 CHILD PART2
+PARENT PART2 CHILD PART3
+SCRIPT POST PART3 clean.sh 
 EOF
 
-condor_submit_dag submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
+condor_submit_dag -f submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
 #condor_submit_dag -terse submit.dag | cut -f 1 -d " " > jobid
 
