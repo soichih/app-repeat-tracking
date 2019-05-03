@@ -59,10 +59,16 @@ NFIB=`jq -r '.num_fibers' config.json`
 
 ## use what exists to build file list
 
+project="" #project name should be set via "connect project" command on osgconnect
+if [ $(hostname) == "csiu.grid.iu.edu" ]; then
+	project="+ProjectName=\"brainlifeio\""
+fi
+
 cat > part1.submit << EOF
 universe = vanilla
 executable = submit_job.sh
 
+$project
 Requirements = HAS_SINGULARITY == TRUE
 
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
@@ -82,7 +88,6 @@ periodic_remove = (NumJobStarts == 5)
 
 transfer_input_files = $TFILE
 transfer_output_files = intermediate
-# rep02,rep03,rep04,rep05,rep06,rep07,rep08,rep09,rep10
 
 #stream_output = True
 output = part1.stdout.log
@@ -96,6 +101,7 @@ cat > part2.submit << EOF
 universe = vanilla
 executable = queue_jobs.sh
 
+$project
 Requirements = HAS_SINGULARITY == TRUE
 
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
@@ -162,10 +168,7 @@ cat > part3.submit << EOF
 universe = vanilla
 executable = network_jobs.sh
 
-# Requirements = HAS_SINGULARITY == TRUE
-# +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/brainlife/mrtrix3:3.0_RC3"
-# +SingularityBindCVMFS = True
-
+$project
 should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
 
@@ -236,10 +239,10 @@ EOF
 
 cat > submit.dag << EOF
 JOB  PART1  part1.submit
-JOB  PART2  part2.submit
-JOB  PART3  part3.submit
-PARENT PART1 CHILD PART2
-PARENT PART2 CHILD PART3
+#JOB  PART2  part2.submit
+#JOB  PART3  part3.submit
+#PARENT PART1 CHILD PART2
+#PARENT PART2 CHILD PART3
 EOF
 
 condor_submit_dag submit.dag | grep "submitted to cluster" | cut -d " " -f 6 > jobid
