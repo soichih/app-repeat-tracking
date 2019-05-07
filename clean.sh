@@ -12,3 +12,5 @@ rm net07/labels_dilated.nii.gz
 rm net08/labels_dilated.nii.gz
 rm net09/labels_dilated.nii.gz
 rm net10/labels_dilated.nii.gz
+
+touch finished
